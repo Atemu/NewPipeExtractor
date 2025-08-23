@@ -34,7 +34,7 @@ ext {
 dependencies {
     implementation project(':timeago-parser')
 
-    implementation "com.github.TeamNewPipe:nanojson:$nanojsonVersion"
+    implementation "com.github.FireMasterK:nanojson:$nanojsonVersion"
     implementation 'org.jsoup:jsoup:1.21.1'
     implementation "com.google.code.findbugs:jsr305:$jsr305Version"
     implementation "com.google.protobuf:protobuf-javalite:$protobufVersion"
