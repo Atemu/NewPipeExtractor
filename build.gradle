@@ -29,8 +29,8 @@ allprojects {
     ext {
         nanojsonVersion = "a507525e549a836c3a8b6ab7090dca38e92942ef"
         jsr305Version = "3.0.2"
-        junitVersion = "5.13.4"
-        checkstyleVersion = "10.4"
+        junitVersion = "5.14.1"
+        checkstyleVersion = "10.26.1"
     }
 }
 
