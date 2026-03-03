@@ -45,6 +45,7 @@ import org.schabi.newpipe.extractor.MetaInfo;
 import org.schabi.newpipe.extractor.MultiInfoItemsCollector;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.downloader.Downloader;
+import org.schabi.newpipe.extractor.exceptions.AccountTerminatedException;
 import org.schabi.newpipe.extractor.exceptions.AgeRestrictedContentException;
 import org.schabi.newpipe.extractor.exceptions.ContentNotAvailableException;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -925,6 +926,16 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                     throw new GeographicRestrictionException(
                             "This video is not available in client's country.");
                 }
+                // "Sign in to confirm that you're not a bot"
+                if (reason != null && reason.contains("a bot")) {
+                    throw new SignInConfirmNotBotException(
+                            "YouTube probably temporarily blocked this IP, got error "
+                                    + status + ": \"" + reason + "\"");
+                }
+
+                if (reason.contains("closed") || reason.contains("terminated")) {
+                    throw new AccountTerminatedException(reason);
+                }
             }
         }
 
@@ -997,6 +1008,10 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         try {
             final JsonObject webPlayerResponse = YoutubeStreamHelper.getWebMetadataPlayerResponse(
                     localization, contentCountry, videoId);
+
+            // Important note: we don't checkPlayabilityStatus() here, because we use this request
+            // exclusively for metadata, not for extracting streams. It turns out that when
+            // YouTube returns a playability status error, the metadata may still be there.
 
             if (!isPlayerResponseNotValid(webPlayerResponse, videoId)) {
                 // The microformat JSON object of the content is only returned on the WEB client,
